@@ -33,7 +33,7 @@ spec:
             secretKeyRef:
               key: password
               name: postgres-credentials
-        image: swr.ru-moscow-1.hc.sbercloud.ru/detsad/flask-kubernetes:v1
+        image: swr.ru-moscow-1.hc.sbercloud.ru/detsad/flask-kubernetes:v2
         imagePullPolicy: Always
         name: flask
         resources: {}
