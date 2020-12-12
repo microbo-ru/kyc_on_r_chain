@@ -28,8 +28,8 @@ def create_app(script_info=None):
     migrate.init_app(app, db)
 
     # register blueprints
-    from project.api.books import books_blueprint
-    app.register_blueprint(books_blueprint)
+    from project.api.persons import persons_blueprint
+    app.register_blueprint(persons_blueprint)
 
     # shell context for flask cli
     @app.shell_context_processor

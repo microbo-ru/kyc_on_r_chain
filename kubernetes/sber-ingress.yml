@@ -18,7 +18,7 @@ spec:
           servicePort: 8080
         property:
           ingress.beta.kubernetes.io/url-match-mode: STARTS_WITH
-      - path: /books
+      - path: /persons
         backend:
           serviceName: flasknodeport
           servicePort: 5000

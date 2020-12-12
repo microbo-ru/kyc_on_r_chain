@@ -10,9 +10,8 @@ RUN npm install
 
 COPY . .
 
-#RUN ROOT_API=http://localhost:5001 npm run build
-RUN ROOT_API=http://37.230.195.218 npm run build
-# RUN ROOT_API=http://10.247.47.179:5000 npm run build
+RUN ROOT_API=http://localhost:5000 npm run build
+# RUN ROOT_API=http://37.230.195.218 npm run build
 
 EXPOSE 8080
 
