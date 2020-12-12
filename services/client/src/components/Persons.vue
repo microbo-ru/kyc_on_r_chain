@@ -4,6 +4,16 @@
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
+         <div style="position: relative" class="margin">
+          <video id="inputVideo" autoplay muted playsinline></video>
+           <!-- <video
+            id="live-video"
+            width="320"
+            height="247"
+            autoplay
+          /> -->
+          <canvas id="overlay" />
+        </div>
         <alert :message=message v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.person-modal>
           Add Person
@@ -120,8 +130,21 @@
 <script>
 import axios from 'axios';
 import Alert from './Alert';
+import $ from 'jquery';
+import * as faceapi from 'face-api.js';
 
 export default {
+  mounted() {
+    // const plugin0 = document.createElement("script");
+    // plugin0.setAttribute(
+    //   "src",
+    //   "https://code.jquery.com/jquery-2.1.1.min.js"
+    // );
+    // plugin0.async = true;
+    // document.head.appendChild(plugin0);
+
+    this.onPlay();
+  },
   data() {
     return {
       persons: [],
@@ -145,6 +168,30 @@ export default {
     alert: Alert,
   },
   methods: {
+      onPlay() {
+      console.log("test 1");  
+      const videoEl = $('#inputVideo').get(0)
+
+      if(videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded())
+        return setTimeout(() => this.onPlay())
+
+
+      const options = getFaceDetectorOptions()
+
+      const ts = Date.now()
+
+      const result = faceapi.detectSingleFace(videoEl, options)
+
+      updateTimeStats(Date.now() - ts)
+
+      if (result) {
+        const canvas = $('#overlay').get(0)
+        const dims = faceapi.matchDimensions(canvas, videoEl, true)
+        faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
+      }
+
+      setTimeout(() => this.onPlay())
+    },
     getPersons() {
       const path = `${this.ROOT_API}/persons`;
       axios.get(path)

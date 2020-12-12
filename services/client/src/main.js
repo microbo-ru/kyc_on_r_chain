@@ -3,6 +3,10 @@ import BootstrapVue from 'bootstrap-vue';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+// import '@tensorflow/tfjs-node';
+
+
+// import * as faceapi from 'face-api.js' 
 
 Vue.config.productionTip = false;
 
