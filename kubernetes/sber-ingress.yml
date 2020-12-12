@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations: 
+    kubernetes.io/elb.id: 6e07f503-0cc6-49cc-be96-825ad3b58a1b
+    kubernetes.io/elb.ip: 37.230.195.218
+    kubernetes.io/elb.port: '80'
+    kubernetes.io/ingress.class: cce
+  name: ingress-test-ingress
+spec:
+  rules:
+  - host: ingress.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: vuenodeport
+          servicePort: 8080
+        property:
+          ingress.beta.kubernetes.io/url-match-mode: STARTS_WITH
+      - path: /books
+        backend:
+          serviceName: flasknodeport
+          servicePort: 5000
+        property:
+          ingress.beta.kubernetes.io/url-match-mode: STARTS_WITH

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>Books</h1>
+        <h1>Books 2</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Book</button>

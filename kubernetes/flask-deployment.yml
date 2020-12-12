@@ -33,12 +33,14 @@ spec:
             secretKeyRef:
               key: password
               name: postgres-credentials
-        image: mjhea0/flask-kubernetes:latest
+        image: swr.ru-moscow-1.hc.sbercloud.ru/detsad/flask-kubernetes:v1
         imagePullPolicy: Always
         name: flask
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+      imagePullSecrets:
+      - name: sber
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
