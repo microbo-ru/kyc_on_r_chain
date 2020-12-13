@@ -10,7 +10,8 @@ source ~/.bash_aliases
 ## Build images
 ```
 docker build -t swr.ru-moscow-1.hc.sbercloud.ru/detsad/flask-kubernetes:v2 ./services/server/
-docker build -t swr.ru-moscow-1.hc.sbercloud.ru/detsad/vue-kubernetes:v6 ./services/client/
+docker build -t swr.ru-moscow-1.hc.sbercloud.ru/detsad/vue-kubernetes:v9 ./services/client/
+docker push swr.ru-moscow-1.hc.sbercloud.ru/detsad/vue-kubernetes:v9
 ```
 
 

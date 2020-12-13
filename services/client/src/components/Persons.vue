@@ -3,7 +3,7 @@
     <div class="row" align="center"
          justify="center">
       <div class="col-sm-10">
-        <h1>KYC&AML</h1>
+        <h1>KYC&AML v9</h1>
         <hr><br><br>
 <!--        <button class="success"-->
 <!--                style="width: 30%"-->
