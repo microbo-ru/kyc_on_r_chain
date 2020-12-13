@@ -18,10 +18,10 @@
 <!--          ERROR-->
 <!--        </button>-->
         <notifications group="foo" />
-        <v-chip label color="orange" text-color="white">
+        <!-- <v-chip label color="orange" text-color="white">
           <v-icon left>
           </v-icon> Real FPS: {{ realFps }}
-        </v-chip>
+        </v-chip> -->
           <div>
             <v-chip label color="orange" text-color="white">
               <v-icon left>
