@@ -235,7 +235,7 @@ export default {
      async recognize () {
       const self = this
       self.increaseProgress()
-      await self.$store.dispatch('camera/startCamera')
+      await self.$store.dispatch('startCamera')
         .then((stream) => {
           const videoDiv = document.getElementById('live-video')
           const canvasDiv = document.getElementById('live-canvas')
