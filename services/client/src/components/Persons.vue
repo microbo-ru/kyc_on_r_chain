@@ -29,7 +29,6 @@
               </v-icon> Real FPS: {{ realFps }}
             </v-chip>
             <video
-              style="visibility:hidden"
               id="live-video"
               width="1"
               height="1"
@@ -222,7 +221,7 @@ export default {
       this.show('foo', 'success', 'USER VERIFIED', 'Vladimir Kocherizhkin')
     },
     prohibited() {
-      this.show('foo', 'error', 'USER PROHIBITED', 'Andrew Polovnikov')
+      this.show('foo', 'error', 'USER PROHIBITED', 'Andrei Polovnikov')
     },
     show (group, type = '', title='', text ='') {
       this.$notify({
