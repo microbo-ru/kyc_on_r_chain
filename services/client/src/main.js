@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import BootstrapVue from 'bootstrap-vue';
 import Vue from 'vue';
+import Vuex from 'vuex';
 import App from './App';
 import router from './router';
 // import '@tensorflow/tfjs-node';
@@ -11,11 +12,15 @@ import router from './router';
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
+// Vue.use(Vuex)
+
+import store from './store'
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
 });

@@ -4,16 +4,21 @@
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
-         <div style="position: relative" class="margin">
-          <video id="inputVideo" autoplay muted playsinline></video>
-           <!-- <video
-            id="live-video"
-            width="320"
-            height="247"
-            autoplay
-          /> -->
-          <canvas id="overlay" />
-        </div>
+          <div>
+            <video
+              id="live-video"
+              width="320"
+              height="247"
+              autoplay
+            />
+          </div>
+          <div>
+            <canvas
+              id="live-canvas"
+              width="320"
+              height="247"
+            />
+          </div>
         <alert :message=message v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.person-modal>
           Add Person
@@ -143,7 +148,15 @@ export default {
     // plugin0.async = true;
     // document.head.appendChild(plugin0);
 
-    this.onPlay();
+    // this.onPlay();
+  },
+   watch: {
+    fps (newFps) {
+      const videoDiv = document.getElementById('live-video')
+      const canvasDiv = document.getElementById('live-canvas')
+      const canvasCtx = canvasDiv.getContext('2d')
+      this.start(videoDiv, canvasDiv, canvasCtx, newFps)
+    }
   },
   data() {
     return {
@@ -167,41 +180,87 @@ export default {
   components: {
     alert: Alert,
   },
+
+  async mounted () {
+    await this.recognize()
+  },
+
+  beforeDestroy () {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+    this.$store.dispatch('camera/stopCamera')
+  },
   methods: {
-      onPlay() {
-      console.log("test 1");  
-      const videoEl = $('#inputVideo').get(0)
+      start (videoDiv, canvasDiv, canvasCtx, fps) {
+        console.log("TTT");
+        const self = this
+        if (self.interval) {
+          clearInterval(self.interval)
+        }
+        self.interval = setInterval(async () => {
+          const t0 = performance.now()
+          canvasCtx.drawImage(videoDiv, 0, 0, 320, 247)
+          const options = {
+            detectionsEnabled: self.withOptions.find(o => o === 0) === 0,
+            landmarksEnabled: self.withOptions.find(o => o === 1) === 1,
+            descriptorsEnabled: self.withOptions.find(o => o === 2) === 2,
+            expressionsEnabled: self.withOptions.find(o => o === 3) === 3
+          }
+          const detections = await self.$store.dispatch('face/getFaceDetections', { canvas: canvasDiv, options })
+          if (detections.length) {
+            if (self.isProgressActive) {
+              self.increaseProgress()
+              self.isProgressActive = false
+            }
+            detections.forEach(async (detection) => {
+              detection.recognition = await self.$store.dispatch('face/recognize', {
+                descriptor: detection.descriptor,
+                options
+              })
+              self.$store.dispatch('face/draw',
+                {
+                  canvasDiv,
+                  canvasCtx,
+                  detection,
+                  options
+                })
+            })
+          }
+          const t1 = performance.now()
+          self.duration = (t1 - t0).toFixed(2)
+          self.realFps = (1000 / (t1 - t0)).toFixed(2)
+        }, 1000 / fps)
+    },
+     async recognize () {
+      const self = this
+      self.increaseProgress()
+      await self.$store.dispatch('camera/startCamera')
+        .then((stream) => {
+          const videoDiv = document.getElementById('live-video')
+          const canvasDiv = document.getElementById('live-canvas')
+          const canvasCtx = canvasDiv.getContext('2d')
+          videoDiv.srcObject = stream
 
-      if(videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded())
-        return setTimeout(() => this.onPlay())
+          self.increaseProgress()
+          self.start(videoDiv, canvasDiv, canvasCtx, self.fps)
+        })
+    },
 
-
-      const options = getFaceDetectorOptions()
-
-      const ts = Date.now()
-
-      const result = faceapi.detectSingleFace(videoEl, options)
-
-      updateTimeStats(Date.now() - ts)
-
-      if (result) {
-        const canvas = $('#overlay').get(0)
-        const dims = faceapi.matchDimensions(canvas, videoEl, true)
-        faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
-      }
-
-      setTimeout(() => this.onPlay())
+    increaseProgress () {
+      const self = this
+      self.progress = (100 / self.step) * ++self.counter
     },
     getPersons() {
       const path = `${this.ROOT_API}/persons`;
-      axios.get(path)
-        .then((res) => {
-          this.persons = res.data.persons;
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
+      // axios.get(path)
+      //   .then((res) => {
+      //     this.persons = res.data.persons;
+      //   })
+      //   .catch((error) => {
+      //     // eslint-disable-next-line
+      //     console.error(error);
+      //   });
     },
     addPerson(payload) {
       const path = `${this.ROOT_API}/persons`;
