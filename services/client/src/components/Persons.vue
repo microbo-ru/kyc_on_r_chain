@@ -180,6 +180,16 @@ export default {
   },
   data() {
     return {
+      interval: null,
+      fps: 15,
+      realFps: 0,
+      step: 2,
+      counter: 0,
+      progress: 0,
+      duration: 0,
+      isProgressActive: true,
+      recognition: '',
+      withOptions: [0, 1, 2, 3],
       persons: [],
       addPersonForm: {
         title: '',
@@ -209,11 +219,10 @@ export default {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    this.$store.dispatch('camera/stopCamera')
+    this.$store.dispatch('stopCamera')
   },
   methods: {
       start (videoDiv, canvasDiv, canvasCtx, fps) {
-        console.log("TTT");
         const self = this
         if (self.interval) {
           clearInterval(self.interval)
@@ -227,18 +236,18 @@ export default {
             descriptorsEnabled: self.withOptions.find(o => o === 2) === 2,
             expressionsEnabled: self.withOptions.find(o => o === 3) === 3
           }
-          const detections = await self.$store.dispatch('face/getFaceDetections', { canvas: canvasDiv, options })
+          const detections = await self.$store.dispatch('getFaceDetections', { canvas: canvasDiv, options })
           if (detections.length) {
             if (self.isProgressActive) {
               self.increaseProgress()
               self.isProgressActive = false
             }
             detections.forEach(async (detection) => {
-              detection.recognition = await self.$store.dispatch('face/recognize', {
+              detection.recognition = await self.$store.dispatch('recognize', {
                 descriptor: detection.descriptor,
                 options
               })
-              self.$store.dispatch('face/draw',
+              self.$store.dispatch('draw',
                 {
                   canvasDiv,
                   canvasCtx,
