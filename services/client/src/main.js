@@ -5,20 +5,18 @@ import Vuetify from 'vuetify'
 import Vuex from 'vuex';
 import App from './App';
 import router from './router';
-// import '@tensorflow/tfjs-node';
-
-
-// import * as faceapi from 'face-api.js' 
+import Notifications from 'vue-notification'
+import store from './store'
 
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 // Vue.use(Vuex)
 Vue.use(Vuetify);
-import store from './store'
+Vue.use(Notifications)
 
 /* eslint-disable no-new */
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   store,

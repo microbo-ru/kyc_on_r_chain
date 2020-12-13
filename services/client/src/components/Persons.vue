@@ -1,29 +1,27 @@
 <template>
   <div class="container">
-    <div class="row">
+    <div class="row" align="center"
+         justify="center">
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
-        <v-card-actions class="justify-center" style="visibility:hidden">
-          <v-btn-toggle v-model="withOptions" multiple >
-            <v-btn>
-              <v-icon>check_box_outline_blank</v-icon>
-              <span>Detection</span>
-            </v-btn>
-            <v-btn>
-              <v-icon>face</v-icon>
-              <span>Landmarks</span>
-            </v-btn>
-            <v-btn>
-              <v-icon>how_to_reg</v-icon>
-              <span>Recognition</span>
-            </v-btn>
-            <v-btn>
-              <v-icon>insert_emoticon</v-icon>
-              <span>Emotion</span>
-            </v-btn>
-          </v-btn-toggle>
-        </v-card-actions>
+<!--        <button class="success"-->
+<!--                style="width: 30%"-->
+<!--                @click="show('foo', 'success', 'USER VERIFIED', ' Vova')">-->
+<!--          <i class="icon ion-information-circled"/>-->
+<!--          SUCCESS-->
+<!--        </button>-->
+<!--        <button class="error"-->
+<!--                style="width: 30%"-->
+<!--                @click="show('foo', 'error', 'USER PROHIBITED', ' Andrew')">-->
+<!--          <i class="icon ion-information-circled"/>-->
+<!--          ERROR-->
+<!--        </button>-->
+        <notifications group="foo" />
+        <v-chip label color="orange" text-color="white">
+          <v-icon left>
+          </v-icon> Real FPS: {{ realFps }}
+        </v-chip>
           <div>
             <v-chip label color="orange" text-color="white">
               <v-icon left>
@@ -164,6 +162,7 @@ import axios from 'axios';
 import Alert from './Alert';
 import $ from 'jquery';
 import * as faceapi from 'face-api.js';
+import Vue from 'vue'
 
 export default {
   async mounted () {
@@ -219,6 +218,23 @@ export default {
     this.$store.dispatch('stopCamera')
   },
   methods: {
+    verified () {
+      this.show('foo', 'success', 'USER VERIFIED', 'Vladimir Kocherizhkin')
+    },
+    prohibited() {
+      this.show('foo', 'error', 'USER PROHIBITED', 'Andrew Polovnikov')
+    },
+    show (group, type = '', title='', text ='') {
+      this.$notify({
+        group,
+        title,
+        text,
+        type,
+        data: {
+          randomNumber: Math.random()
+        }
+      })
+    },
       start (videoDiv, canvasDiv, canvasCtx, fps) {
         const self = this
         if (self.interval) {
