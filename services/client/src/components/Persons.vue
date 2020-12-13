@@ -189,7 +189,8 @@ export default {
       duration: 0,
       isProgressActive: true,
       recognition: '',
-      withOptions: [0, 1, 2, 3],
+      // withOptions: [0, 1, 2, 3],
+      withOptions: [0, 1],
       persons: [],
       addPersonForm: {
         title: '',
