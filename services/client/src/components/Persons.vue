@@ -212,6 +212,8 @@ export default {
   },
 
   async mounted () {
+    const self = this
+    await self.$store.dispatch('load')
     await this.recognize()
   },
 

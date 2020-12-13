@@ -83,13 +83,15 @@ export default new Vuex.Store({
       commit('stop')
     },
     load ({ commit, state }) {
+      console.log('test');
       if (!state.loading && !state.loaded) {
+        console.log('test1');
         commit('loading')
         return Promise.all([
-          faceapi.loadFaceRecognitionModel('/data/models'),
-          faceapi.loadFaceLandmarkModel('/data/models'),
-          faceapi.loadTinyFaceDetectorModel('/data/models'),
-          faceapi.loadFaceExpressionModel('/data/models')
+          faceapi.loadFaceRecognitionModel('/static/data/models'),
+          faceapi.loadFaceLandmarkModel('/static/data/models'),
+          faceapi.loadTinyFaceDetectorModel('/static/data/models'),
+          faceapi.loadFaceExpressionModel('/static/data/models')
         ])
           .then(() => {
             commit('load')
