@@ -1,4 +1,4 @@
-# Running Flask on Kubernetes
+# SBERCLOUD. ADVANCED HACKING, 2020
 
 ```sh
 echo "alias sber='kubectl --kubeconfig ~/.kube/config'" >> /.bash_aliases

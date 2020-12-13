@@ -18,7 +18,7 @@ spec:
         app: vue
     spec:
       containers:
-      - image: swr.ru-moscow-1.hc.sbercloud.ru/detsad/vue-kubernetes:v6
+      - image: swr.ru-moscow-1.hc.sbercloud.ru/detsad/vue-kubernetes:v7
         imagePullPolicy: Always
         name: vue
         resources: {}
