@@ -27,7 +27,7 @@
           <div>
             <v-chip label color="orange" text-color="white">
               <v-icon left>
-                
+
               </v-icon> Real FPS: {{ realFps }}
             </v-chip>
             <video
@@ -36,6 +36,7 @@
               width="1"
               height="1"
               autoplay
+              style="visibility: hidden"
             />
           </div>
           <div>
@@ -165,7 +166,10 @@ import $ from 'jquery';
 import * as faceapi from 'face-api.js';
 
 export default {
-  mounted() {
+  async mounted () {
+    const self = this
+    await self.$store.dispatch('load')
+    await this.recognize()
   },
    watch: {
     fps (newFps) {
@@ -208,13 +212,6 @@ export default {
   components: {
     alert: Alert,
   },
-
-  async mounted () {
-    const self = this
-    await self.$store.dispatch('load')
-    await this.recognize()
-  },
-
   beforeDestroy () {
     if (this.interval) {
       clearInterval(this.interval)
