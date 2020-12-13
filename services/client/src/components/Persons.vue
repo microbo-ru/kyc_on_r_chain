@@ -27,9 +27,10 @@
           <div>
             <video
               id="live-video"
-              width="320"
-              height="247"
+              width="1"
+              height="1"
               autoplay
+              style="visibility: hidden"
             />
           </div>
           <div>
@@ -159,16 +160,10 @@ import $ from 'jquery';
 import * as faceapi from 'face-api.js';
 
 export default {
-  mounted() {
-    // const plugin0 = document.createElement("script");
-    // plugin0.setAttribute(
-    //   "src",
-    //   "https://code.jquery.com/jquery-2.1.1.min.js"
-    // );
-    // plugin0.async = true;
-    // document.head.appendChild(plugin0);
-
-    // this.onPlay();
+  async mounted () {
+    const self = this
+    await self.$store.dispatch('load')
+    await this.recognize()
   },
    watch: {
     fps (newFps) {
@@ -211,13 +206,6 @@ export default {
   components: {
     alert: Alert,
   },
-
-  async mounted () {
-    const self = this
-    await self.$store.dispatch('load')
-    await this.recognize()
-  },
-
   beforeDestroy () {
     if (this.interval) {
       clearInterval(this.interval)
