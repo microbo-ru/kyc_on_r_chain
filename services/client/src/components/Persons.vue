@@ -4,6 +4,26 @@
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
+        <v-card-actions class="justify-center">
+          <v-btn-toggle v-model="withOptions" multiple>
+            <v-btn>
+              <v-icon>check_box_outline_blank</v-icon>
+              <span>Detection</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>face</v-icon>
+              <span>Landmarks</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>how_to_reg</v-icon>
+              <span>Recognition</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>insert_emoticon</v-icon>
+              <span>Emotion</span>
+            </v-btn>
+          </v-btn-toggle>
+        </v-card-actions>
           <div>
             <video
               id="live-video"
