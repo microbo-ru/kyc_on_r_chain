@@ -4,8 +4,8 @@
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
-        <v-card-actions class="justify-center">
-          <v-btn-toggle v-model="withOptions" multiple>
+        <v-card-actions class="justify-center" style="visibility:hidden">
+          <v-btn-toggle v-model="withOptions" multiple >
             <v-btn>
               <v-icon>check_box_outline_blank</v-icon>
               <span>Detection</span>
@@ -25,10 +25,16 @@
           </v-btn-toggle>
         </v-card-actions>
           <div>
+            <v-chip label color="orange" text-color="white">
+              <v-icon left>
+                
+              </v-icon> Real FPS: {{ realFps }}
+            </v-chip>
             <video
+              style="visibility:hidden"
               id="live-video"
-              width="320"
-              height="247"
+              width="1"
+              height="1"
               autoplay
             />
           </div>
@@ -160,15 +166,6 @@ import * as faceapi from 'face-api.js';
 
 export default {
   mounted() {
-    // const plugin0 = document.createElement("script");
-    // plugin0.setAttribute(
-    //   "src",
-    //   "https://code.jquery.com/jquery-2.1.1.min.js"
-    // );
-    // plugin0.async = true;
-    // document.head.appendChild(plugin0);
-
-    // this.onPlay();
   },
    watch: {
     fps (newFps) {
@@ -285,14 +282,14 @@ export default {
     },
     getPersons() {
       const path = `${this.ROOT_API}/persons`;
-      // axios.get(path)
-      //   .then((res) => {
-      //     this.persons = res.data.persons;
-      //   })
-      //   .catch((error) => {
-      //     // eslint-disable-next-line
-      //     console.error(error);
-      //   });
+      axios.get(path)
+        .then((res) => {
+          this.persons = res.data.persons;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
     },
     addPerson(payload) {
       const path = `${this.ROOT_API}/persons`;
