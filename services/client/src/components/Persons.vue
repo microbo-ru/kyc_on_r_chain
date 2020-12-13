@@ -4,6 +4,47 @@
       <div class="col-sm-10">
         <h1>KYC&AML</h1>
         <hr><br><br>
+        <v-card-actions class="justify-center" style="visibility:hidden">
+          <v-btn-toggle v-model="withOptions" multiple >
+            <v-btn>
+              <v-icon>check_box_outline_blank</v-icon>
+              <span>Detection</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>face</v-icon>
+              <span>Landmarks</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>how_to_reg</v-icon>
+              <span>Recognition</span>
+            </v-btn>
+            <v-btn>
+              <v-icon>insert_emoticon</v-icon>
+              <span>Emotion</span>
+            </v-btn>
+          </v-btn-toggle>
+        </v-card-actions>
+          <div>
+            <v-chip label color="orange" text-color="white">
+              <v-icon left>
+                
+              </v-icon> Real FPS: {{ realFps }}
+            </v-chip>
+            <video
+              style="visibility:hidden"
+              id="live-video"
+              width="1"
+              height="1"
+              autoplay
+            />
+          </div>
+          <div>
+            <canvas
+              id="live-canvas"
+              width="320"
+              height="247"
+            />
+          </div>
         <alert :message=message v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.person-modal>
           Add Person
@@ -120,10 +161,33 @@
 <script>
 import axios from 'axios';
 import Alert from './Alert';
+import $ from 'jquery';
+import * as faceapi from 'face-api.js';
 
 export default {
+  mounted() {
+  },
+   watch: {
+    fps (newFps) {
+      const videoDiv = document.getElementById('live-video')
+      const canvasDiv = document.getElementById('live-canvas')
+      const canvasCtx = canvasDiv.getContext('2d')
+      this.start(videoDiv, canvasDiv, canvasCtx, newFps)
+    }
+  },
   data() {
     return {
+      interval: null,
+      fps: 15,
+      realFps: 0,
+      step: 2,
+      counter: 0,
+      progress: 0,
+      duration: 0,
+      isProgressActive: true,
+      recognition: '',
+      // withOptions: [0, 1, 2, 3],
+      withOptions: [0, 1],
       persons: [],
       addPersonForm: {
         title: '',
@@ -144,7 +208,78 @@ export default {
   components: {
     alert: Alert,
   },
+
+  async mounted () {
+    const self = this
+    await self.$store.dispatch('load')
+    await this.recognize()
+  },
+
+  beforeDestroy () {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+    this.$store.dispatch('stopCamera')
+  },
   methods: {
+      start (videoDiv, canvasDiv, canvasCtx, fps) {
+        const self = this
+        if (self.interval) {
+          clearInterval(self.interval)
+        }
+        self.interval = setInterval(async () => {
+          const t0 = performance.now()
+          canvasCtx.drawImage(videoDiv, 0, 0, 320, 247)
+          const options = {
+            detectionsEnabled: self.withOptions.find(o => o === 0) === 0,
+            landmarksEnabled: self.withOptions.find(o => o === 1) === 1,
+            descriptorsEnabled: self.withOptions.find(o => o === 2) === 2,
+            expressionsEnabled: self.withOptions.find(o => o === 3) === 3
+          }
+          const detections = await self.$store.dispatch('getFaceDetections', { canvas: canvasDiv, options })
+          if (detections.length) {
+            if (self.isProgressActive) {
+              self.increaseProgress()
+              self.isProgressActive = false
+            }
+            detections.forEach(async (detection) => {
+              detection.recognition = await self.$store.dispatch('recognize', {
+                descriptor: detection.descriptor,
+                options
+              })
+              self.$store.dispatch('draw',
+                {
+                  canvasDiv,
+                  canvasCtx,
+                  detection,
+                  options
+                })
+            })
+          }
+          const t1 = performance.now()
+          self.duration = (t1 - t0).toFixed(2)
+          self.realFps = (1000 / (t1 - t0)).toFixed(2)
+        }, 1000 / fps)
+    },
+     async recognize () {
+      const self = this
+      self.increaseProgress()
+      await self.$store.dispatch('startCamera')
+        .then((stream) => {
+          const videoDiv = document.getElementById('live-video')
+          const canvasDiv = document.getElementById('live-canvas')
+          const canvasCtx = canvasDiv.getContext('2d')
+          videoDiv.srcObject = stream
+
+          self.increaseProgress()
+          self.start(videoDiv, canvasDiv, canvasCtx, self.fps)
+        })
+    },
+
+    increaseProgress () {
+      const self = this
+      self.progress = (100 / self.step) * ++self.counter
+    },
     getPersons() {
       const path = `${this.ROOT_API}/persons`;
       axios.get(path)
