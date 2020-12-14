@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: vueConfig
 data:
-  ROOT_API: https://192.168.0.166:31178
+  ROOT_API: https://192.168.0.166:30214

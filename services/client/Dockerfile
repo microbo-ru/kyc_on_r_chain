@@ -10,7 +10,7 @@ RUN npm install
 
 COPY . .
 
-ARG ROOT_API=https://192.168.0.166:31178
+ARG ROOT_API=https://37.230.195.218
 RUN ROOT_API=$ROOT_API npm run build
 
 EXPOSE 8080
